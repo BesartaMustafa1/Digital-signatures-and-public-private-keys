@@ -39,3 +39,14 @@ def pad_message(message, block_size):
     # (2, 3 ose 4) nese blloku i fundit ka karaktere me pak se inputi i userit e ben padding ate me shkronjen "A"
     padding_length = (block_size - len(message) % block_size) % block_size
     return message + 'A' * padding_length
+
+def mod_inv(matrix, modulus):
+    det = int(np.round(np.linalg.det(matrix)))
+    det_inv = pow(det, -1, modulus)
+    matrix_mod_inv = det_inv * np.round(det * np.linalg.inv(matrix)).astype(int) % modulus
+    return matrix_mod_inv
+
+def message_to_vector(message, block_size):
+    """Convert the padded message to a vector of numerical values."""
+    padded_message = pad_message(message, block_size)
+    return np.array([char_to_num(c) for c in padded_message if c is not None])
