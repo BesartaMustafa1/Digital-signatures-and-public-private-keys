@@ -63,5 +63,4 @@ def encrypt(message, matrix):
         encrypted_vector = np.dot(matrix, block_vector) % 64
         encrypted_message += ''.join(num_to_char(int(i)) for i in encrypted_vector)
 
-
     return encrypted_message
