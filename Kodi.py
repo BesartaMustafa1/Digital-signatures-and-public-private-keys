@@ -50,3 +50,18 @@ def message_to_vector(message, block_size):
     """Convert the padded message to a vector of numerical values."""
     padded_message = pad_message(message, block_size)
     return np.array([char_to_num(c) for c in padded_message if c is not None])
+
+def encrypt(message, matrix):
+    if matrix.shape[0] != matrix.shape[1]:
+        raise ValueError("The encryption matrix must be square.")
+    block_size = len(matrix)
+    message_vector = message_to_vector(message, block_size)
+    encrypted_message = ""
+
+    for i in range(0, len(message_vector), block_size):
+        block_vector = message_vector[i:i + block_size]
+        encrypted_vector = np.dot(matrix, block_vector) % 64
+        encrypted_message += ''.join(num_to_char(int(i)) for i in encrypted_vector)
+
+
+    return encrypted_message
