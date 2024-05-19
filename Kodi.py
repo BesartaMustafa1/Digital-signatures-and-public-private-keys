@@ -64,3 +64,18 @@ def encrypt(message, matrix):
         encrypted_message += ''.join(num_to_char(int(i)) for i in encrypted_vector)
 
     return encrypted_message
+
+def decrypt(encrypted_message, matrix):
+    if matrix.shape[0] != matrix.shape[1]:
+        raise ValueError("The decryption matrix must be square.")
+    block_size = len(matrix)
+    message_vector = message_to_vector(encrypted_message, block_size)
+    decrypted_message = ""
+    matrix_inv = mod_inv(matrix, 64)
+
+    for i in range(0, len(message_vector), block_size):
+        block_vector = message_vector[i:i + block_size]
+        decrypted_vector = np.dot(matrix_inv, block_vector) % 64
+        decrypted_message += ''.join(num_to_char(int(i)) for i in decrypted_vector)
+
+    return decrypted_message
