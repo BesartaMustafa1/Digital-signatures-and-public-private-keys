@@ -137,17 +137,18 @@ class MatrixCipherGUI: # krijimi i ndërfaqeve grafike të përdoruesit
 
 
     def encrypt_message(self):
-        message = self.message_entry.get()
-        try:
-            rank = int(self.rank_entry.get())
-            if rank not in matrix_rank:
-                raise ValueError("Invalid rank")
-            matrix = random.choice(matrix_rank[rank])
-            encrypted_message = encrypt(message, matrix)
-            self.encrypted_message_text.delete(1.0, tk.END)
-            self.encrypted_message_text.insert(tk.END, encrypted_message)
-        except Exception as e:
-            messagebox.showerror("Error", str(e))
+     message = self.message_entry.get()
+     try:
+        rank = int(self.rank_entry.get())
+        if rank not in matrix_rank:
+            raise ValueError("Invalid rank")
+        matrix = random.choice(matrix_rank[rank])
+        self.display_matrix(matrix)
+        encrypted_message = encrypt(message, matrix)
+        self.encrypted_message_text.delete(1.0, tk.END)
+        self.encrypted_message_text.insert(tk.END, encrypted_message)
+     except Exception as e:
+        messagebox.showerror("Error", str(e))
 
     def decrypt_message(self):
         encrypted_message = self.encrypted_message_text.get(1.0, tk.END).strip()
