@@ -5,7 +5,7 @@ This project was completed by sophomore students from the Faculty of Electrical 
 - [Auron Musliu](https://github.com/Auronmussliu1)
 - [Aurore Smirqaku](https://github.com/auroresmirqakuu)
 - [Avdi Shabani](https://github.com/AvdiShabani)
-- [Artin Bajmrami](https://github.com/ArditBajrami1)
+- [Ardit Bajmrami](https://github.com/ArditBajrami1)
 - [Besarta Mustafa](https://github.com/BesartaMustafa1)
 ## Code Explanation
 ### Dependencies
