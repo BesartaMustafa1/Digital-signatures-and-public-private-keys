@@ -1,12 +1,10 @@
-#Librarit numpy dhe sympy per te menaxhuar dhe manipuluar matrica
-import numpy as np  #perdoret per llogaritje shkencore
-from sympy import Matrix #perdoret per te manipuluar dhe kryer veprime me matrica (me simbole)
+import numpy as np
+from sympy import Matrix
 import random
-#Librarit per gui:
 import tkinter as tk
 from tkinter import messagebox
 
-# Matrica të paracaktuara për gradë të ndryshme
+# Predefined matrices for various ranks
 matrix_rank = {
     2: [np.array([[12, 1], [1, 11]]), np.array([[13, 1], [16, 17]])],
     3: [np.array([[7, 16, 16], [17, 13, 7], [11, 10, 1]]), np.array([[21, 5, 1], [23, 22, 25], [19, 14, 24]])],
@@ -15,47 +13,45 @@ matrix_rank = {
 }
 
 def char_to_num(char):
-    """Konverton një karakter në vlerë numerike bazuar në mapimet e paracaktuara."""
+    """Convert character to numerical value based on predefined mappings."""
     if char == ' ':
-        return 62  # Cakto një numër unik për hapësirën
+        return 62  # Assign a unique number for space
     elif 'A' <= char <= 'Z':
-        return ord(char) - ord('A')  # Konverton shkronjat e mëdha në numra 0-25
+        return ord(char) - ord('A')
     elif 'a' <= char <= 'z':
-        return ord(char) - ord('a') + 26  # Konverton shkronjat e vogla në numra 26-51
+        return ord(char) - ord('a') + 26
     elif '0' <= char <= '9':
-        return ord(char) - ord('0') + 52  # Konverton numrat në karaktere 52-61
+        return ord(char) - ord('0') + 52
     else:
-        return 63  # Konverton karakteret e panjohura në 63 ('X')
+        return 63  # Convert unknown characters to 63 ('X')
 
 def num_to_char(num):
-    """Konverton një numër në karakter bazuar në mapimet e paracaktuara."""
     if num == 62:
-        return ' '  # Kthen hapësirën
+        return ' '
     elif 0 <= num <= 25:
-        return chr(num + ord('A'))  # Kthen shkronjat e mëdha nga 0-25
+        return chr(num + ord('A'))
     elif 26 <= num <= 51:
-        return chr(num - 26 + ord('a'))  # Kthen shkronjat e vogla nga 26-51
+        return chr(num - 26 + ord('a'))
     elif 52 <= num <= 61:
-        return chr(num - 52 + ord('0'))  # Kthen numrat nga 52-61
+        return chr(num - 52 + ord('0'))
     else:
-        return 'X'  # Kthen karakterin 'X' për vlera të tjera
+        return 'X'
 
 def pad_message(message, block_size):
-    """Mbush mesazhin për të siguruar që gjatësia e tij të jetë shumëfish i madhësisë së bllokut."""
+    """Pad the message to ensure its length is a multiple of the block size."""
     padding_length = (block_size - len(message) % block_size) % block_size
-    return message + ' ' * padding_length  # Shton hapësira në fund të mesazhit
+    return message + ' ' * padding_length
 
 def mod_inv(matrix, modulus):
-    """Llogarit inverzin modular të matricës me një modulus të caktuar."""
-    det = int(np.round(np.linalg.det(matrix)))  # Llogarit determinantën e matricës dhe e rrumbullakos
-    det_inv = pow(det, -1, modulus)  # Llogarit inverzin modular të determinantës
-    matrix_mod_inv = det_inv * np.round(det * np.linalg.inv(matrix)).astype(int) % modulus  # Llogarit inverzin modular të matricës
+    det = int(np.round(np.linalg.det(matrix)))
+    det_inv = pow(det, -1, modulus)
+    matrix_mod_inv = det_inv * np.round(det * np.linalg.inv(matrix)).astype(int) % modulus
     return matrix_mod_inv
 
 def message_to_vector(message, block_size):
-    """Konverton mesazhin e mbushur në një vektor të vlerave numerike."""
-    padded_message = pad_message(message, block_size)  # Mbush mesazhin për të qenë shumëfish i madhësisë së bllokut
-    return np.array([char_to_num(c) for c in padded_message if c is not None])  # Konverton çdo karakter në vlerë numerike
+    """Convert the padded message to a vector of numerical values."""
+    padded_message = pad_message(message, block_size)
+    return np.array([char_to_num(c) for c in padded_message if c is not None])
 
 def encrypt(message, matrix):
     """Enkripton mesazhin duke përdorur matricën e dhënë."""
@@ -73,7 +69,6 @@ def encrypt(message, matrix):
 
     return encrypted_message  # Kthe mesazhin e enkriptuar
 
-
 def decrypt(encrypted_message, matrix):
     if matrix.shape[0] != matrix.shape[1]: # Kontrollo nëse matrica është katrore.
         raise ValueError("The decryption matrix must be square.")
@@ -89,10 +84,11 @@ def decrypt(encrypted_message, matrix):
 
     return decrypted_message
 
-class MatrixCipherGUI: # krijimi i ndërfaqeve grafike të përdoruesit
+class MatrixCipherGUI:
     def __init__(self, root):
         self.root = root
         self.root.title("Matrix Cipher")
+        self.encryption_matrix = None  # Variable to store the encryption matrix
 
         self.message_label = tk.Label(root, text="Enter your message:")
         self.message_label.pack()
@@ -135,34 +131,30 @@ class MatrixCipherGUI: # krijimi i ndërfaqeve grafike të përdoruesit
         self.matrix_text.delete(1.0, tk.END)
         self.matrix_text.insert(tk.END, f"{matrix_str}\nDimensions: {matrix.shape}")
 
-
     def encrypt_message(self):
-     message = self.message_entry.get()
-     try:
-        rank = int(self.rank_entry.get())
-        if rank not in matrix_rank:
-            raise ValueError("Invalid rank")
-        matrix = random.choice(matrix_rank[rank])
-        self.display_matrix(matrix)
-        encrypted_message = encrypt(message, matrix)
-        self.encrypted_message_text.delete(1.0, tk.END)
-        self.encrypted_message_text.insert(tk.END, encrypted_message)
-     except Exception as e:
-        messagebox.showerror("Error", str(e))
-
-    def decrypt_message(self):
-        encrypted_message = self.encrypted_message_text.get(1.0, tk.END).strip()
+        message = self.message_entry.get()
         try:
             rank = int(self.rank_entry.get())
             if rank not in matrix_rank:
                 raise ValueError("Invalid rank")
-            matrix = random.choice(matrix_rank[rank])
-            decrypted_message = decrypt(encrypted_message, matrix)
+            self.encryption_matrix = random.choice(matrix_rank[rank])
+            self.display_matrix(self.encryption_matrix)
+            encrypted_message = encrypt(message, self.encryption_matrix)
+            self.encrypted_message_text.delete(1.0, tk.END)
+            self.encrypted_message_text.insert(tk.END, encrypted_message)
+        except Exception as e:
+            messagebox.showerror("Error", str(e))
+
+    def decrypt_message(self):
+        encrypted_message = self.encrypted_message_text.get(1.0, tk.END).strip()
+        try:
+            if self.encryption_matrix is None:
+                raise ValueError("No matrix available. Please encrypt a message first.")
+            decrypted_message = decrypt(encrypted_message, self.encryption_matrix)
             self.decrypted_message_text.delete(1.0, tk.END)
             self.decrypted_message_text.insert(tk.END, decrypted_message)
         except Exception as e:
             messagebox.showerror("Error", str(e))
-
 
 if __name__ == "__main__":
     root = tk.Tk()
