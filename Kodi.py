@@ -66,16 +66,16 @@ def encrypt(message, matrix):
     return encrypted_message
 
 def decrypt(encrypted_message, matrix):
-    if matrix.shape[0] != matrix.shape[1]:
+    if matrix.shape[0] != matrix.shape[1]: # Kontrollo nëse matrica është katrore.
         raise ValueError("The decryption matrix must be square.")
-    block_size = len(matrix)
-    message_vector = message_to_vector(encrypted_message, block_size)
-    decrypted_message = ""
-    matrix_inv = mod_inv(matrix, 64)
+    block_size = len(matrix)  # Merr madhësinë e bllokut nga gjatësia e një dimensioni të matricës.
+    message_vector = message_to_vector(encrypted_message, block_size)  # Konverto mesazhin e enkriptuar në një vektor mesazhesh duke përdorur madhësinë e bllokut.
+    decrypted_message = "" # Inicializo një string për mesazhin e dekriptuar.
+    matrix_inv = mod_inv(matrix, 64)  # Llogarit inverzin modular të matricës me mod 64.
 
-    for i in range(0, len(message_vector), block_size):
-        block_vector = message_vector[i:i + block_size]
-        decrypted_vector = np.dot(matrix_inv, block_vector) % 64
-        decrypted_message += ''.join(num_to_char(int(i)) for i in decrypted_vector)
+    for i in range(0, len(message_vector), block_size):   # Për çdo bllok të vektorit të mesazhit:
+        block_vector = message_vector[i:i + block_size]   # Merr një bllok të vektorit të mesazhit.
+        decrypted_vector = np.dot(matrix_inv, block_vector) % 64   # Dekripto bllokun duke e shumëzuar me inverzin e matricës dhe duke marrë mbetjen me mod 64.
+        decrypted_message += ''.join(num_to_char(int(i)) for i in decrypted_vector) # Konverto numrat e dekriptuar në karaktere dhe shto në mesazhin e dekriptuar.
 
     return decrypted_message
