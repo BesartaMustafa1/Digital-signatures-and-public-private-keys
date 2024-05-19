@@ -16,26 +16,30 @@ matrix_rank = {
 
 def char_to_num(char):
     #shendrrimi i karaktereve ne numra
-    if 'A' <= char <= 'Z': #Merr karakteret(shkronjat) prej A deri ne Z (UPPERCASE)
+    if char == ' ':
+        return 62 
+    elif 'A' <= char <= 'Z': #Merr karakteret(shkronjat) prej A deri ne Z (UPPERCASE)
         return ord(char) - ord('A') #I rendit dhe u jep vlere karaktereve SHEMBULL A=0, B=1, ... Z=25
     elif 'a' <= char <= 'z': #Merr karakteret(shkronjat) prej a deri ne z (lowercase)
         return ord(char) - ord('a') + 26 #I rendit dhe u jep vlere karaktereve SHEMBULL a=26, B=27, ... Z=51
     elif '0' <= char <= '9': #Merr karakteret(numrat) prej 0 deri ne Z (UPPERCASE)
         return ord(char) - ord('0') + 52 #I rendit dhe u jep vlere karaktereve SHEMBULL 0=52, 1=23, ... Z=61
     else:
-        return ord('X') - ord('A')  #Per karakteret tjera e kthen "X"
+        return 63  #Per karakteret tjera e kthen "X"
 
 def num_to_char(num):
     #Shendrrimi i numrave ne karaktere
     #Logjika e njejt me "char_to_num" vetem se i rikthen nga numrat e caktuar ne karakteret origjinale 
-    if 0 <= num <= 25:
+     if num == 62:
+        return ' '
+     elif 0 <= num <= 25:
         return chr(num + ord('A'))
-    elif 26 <= num <= 51:
+     elif 26 <= num <= 51:
         return chr(num - 26 + ord('a'))
-    elif 52 <= num <= 61:
+     elif 52 <= num <= 61:
         return chr(num - 52 + ord('0'))
-    else:
-        return None
+     else:
+        return 'X'
     
 def pad_message(message, block_size):
     #Siguron qe mesazhi te kete padding ne menyre te duhur, ndan mesashin ne baze te inputit te userit
@@ -84,7 +88,7 @@ def decrypt(encrypted_message, matrix):
     return decrypted_message
 
 class MatrixCipherGUI: # krijimi i ndërfaqeve grafike të përdoruesit
-    def __init__(self,root):
+    def __init__(self, root):
         self.root = root
         self.root.title("Matrix Cipher")
 
@@ -102,7 +106,16 @@ class MatrixCipherGUI: # krijimi i ndërfaqeve grafike të përdoruesit
 
         self.encrypt_button = tk.Button(root, text="Encrypt", command=self.encrypt_message)
         self.encrypt_button.pack()
-        
+
+        self.matrix_label = tk.Label(root, text="Used Matrix:")
+        self.matrix_label.pack()
+
+        self.matrix_text = tk.Text(root, height=4, width=50)
+        self.matrix_text.pack()
+
+        self.encrypted_message_label = tk.Label(root, text="Encrypted Message:")
+        self.encrypted_message_label.pack()
+
         self.encrypted_message_text = tk.Text(root, height=2, width=50)
         self.encrypted_message_text.pack()
 
@@ -113,14 +126,20 @@ class MatrixCipherGUI: # krijimi i ndërfaqeve grafike të përdoruesit
         self.decrypted_message_label.pack()
 
         self.decrypted_message_text = tk.Text(root, height=2, width=50)
-        self.decrypted_message_text.pack()  
+        self.decrypted_message_text.pack()
+
+    def display_matrix(self, matrix):
+        matrix_str = '\n'.join([' '.join(map(str, row)) for row in matrix])
+        self.matrix_text.delete(1.0, tk.END)
+        self.matrix_text.insert(tk.END, f"{matrix_str}\nDimensions: {matrix.shape}")
+
 
     def encrypt_message(self):
-        message = self.message_entry.get() #Merr mesazhin nga useri qe e shkruan ne gui
-        try: #Fillimi i bllokut "try", kjo lejon kodin te trajtoj gabimet qe mund te ndodhin gjate egzekutimit
-            rank = int(self.rank_entry.get()) # Merr vleren e matrices qe e jep useri dhe e konverton ate ne nje numer te plote
+        message = self.message_entry.get()
+        try:
+            rank = int(self.rank_entry.get())
             if rank not in matrix_rank:
-                raise ValueError("Invalid rank") #Kontrollon nese useri jep rangun e mire e matrices ne rastin ton 2, 3 ose 4. Me rast se useri shkruan 5 do te shfaqet invalid rank!
+                raise ValueError("Invalid rank")
             matrix = random.choice(matrix_rank[rank])
             encrypted_message = encrypt(message, matrix)
             self.encrypted_message_text.delete(1.0, tk.END)
@@ -128,7 +147,7 @@ class MatrixCipherGUI: # krijimi i ndërfaqeve grafike të përdoruesit
         except Exception as e:
             messagebox.showerror("Error", str(e))
 
-def decrypt_message(self):
+    def decrypt_message(self):
         encrypted_message = self.encrypted_message_text.get(1.0, tk.END).strip()
         try:
             rank = int(self.rank_entry.get())
@@ -140,8 +159,9 @@ def decrypt_message(self):
             self.decrypted_message_text.insert(tk.END, decrypted_message)
         except Exception as e:
             messagebox.showerror("Error", str(e))
-            
+
+
 if __name__ == "__main__":
     root = tk.Tk()
     app = MatrixCipherGUI(root)
-    root.mainloop()             
+    root.mainloop()
