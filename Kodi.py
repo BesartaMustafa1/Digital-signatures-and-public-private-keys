@@ -116,11 +116,11 @@ class MatrixCipherGUI: # krijimi i ndërfaqeve grafike të përdoruesit
         self.decrypted_message_text.pack()  
 
     def encrypt_message(self):
-        message = self.message_entry.get()
-        try:
-            rank = int(self.rank_entry.get())
+        message = self.message_entry.get() #Merr mesazhin nga useri qe e shkruan ne gui
+        try: #Fillimi i bllokut "try", kjo lejon kodin te trajtoj gabimet qe mund te ndodhin gjate egzekutimit
+            rank = int(self.rank_entry.get()) # Merr vleren e matrices qe e jep useri dhe e konverton ate ne nje numer te plote
             if rank not in matrix_rank:
-                raise ValueError("Invalid rank")
+                raise ValueError("Invalid rank") #Kontrollon nese useri jep rangun e mire e matrices ne rastin ton 2, 3 ose 4. Me rast se useri shkruan 5 do te shfaqet invalid rank!
             matrix = random.choice(matrix_rank[rank + 1]) #Sedi sigurt ao nrregull qikjo pjese duhet me testu edhe me decrypt nese ka gabim e rregullojm
             encrypted_message = encrypt(message, matrix)
 
