@@ -8,6 +8,7 @@ This project was completed by sophomore students from the Faculty of Electrical 
 - [Ardit Bajmrami](https://github.com/ArditBajrami1)
 - [Besarta Mustafa](https://github.com/BesartaMustafa1)
 ## Code Explanation
+This encryption uses the Hill Cipher method. Hill Cipher is a symmetric encryption algorithm that uses matrix algebra to encrypt and decrypt messages. It is a classic block cipher that transforms a set of characters into another set using matrix operations.
 ### Dependencies
 numpy: For numerical operations and matrix manipulation.
 sympy: For handling matrix inversions.
