@@ -102,3 +102,26 @@ class MatrixCipherGUI: # krijimi i ndërfaqeve grafike të përdoruesit
 
         self.encrypt_button = tk.Button(root, text="Encrypt", command=self.encrypt_message)
         self.encrypt_button.pack()
+        
+        self.encrypted_message_text = tk.Text(root, height=2, width=50)
+        self.encrypted_message_text.pack()
+
+        self.decrypt_button = tk.Button(root, text="Decrypt", command=self.decrypt_message)
+        self.decrypt_button.pack()
+
+        self.decrypted_message_label = tk.Label(root, text="Decrypted Message:")
+        self.decrypted_message_label.pack()
+
+        self.decrypted_message_text = tk.Text(root, height=2, width=50)
+        self.decrypted_message_text.pack()  
+
+    def encrypt_message(self):
+        message = self.message_entry.get()
+        try:
+            rank = int(self.rank_entry.get())
+            if rank not in matrix_rank:
+                raise ValueError("Invalid rank")
+            matrix = random.choice(matrix_rank[rank + 1]) #Sedi sigurt ao nrregull qikjo pjese duhet me testu edhe me decrypt nese ka gabim e rregullojm
+            encrypted_message = encrypt(message, matrix)
+
+
