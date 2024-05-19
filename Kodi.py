@@ -2,6 +2,9 @@
 import numpy as np  #perdoret per llogaritje shkencore
 from sympy import Matrix #perdoret per te manipuluar dhe kryer veprime me matrica (me simbole)
 import random
+#Librarit per gui:
+import tkinter as tk
+from tkinter import messagebox
 
 # I definojme disa matrica te ndryshme
 matrix_rank = {
@@ -79,3 +82,23 @@ def decrypt(encrypted_message, matrix):
         decrypted_message += ''.join(num_to_char(int(i)) for i in decrypted_vector) # Konverto numrat e dekriptuar në karaktere dhe shto në mesazhin e dekriptuar.
 
     return decrypted_message
+
+class MatrixCipherGUI: # krijimi i ndërfaqeve grafike të përdoruesit
+    def __init__(self,root):
+        self.root = root
+        self.root.title("Matrix Cipher")
+
+        self.message_label = tk.Label(root, text="Enter your message:")
+        self.message_label.pack()
+
+        self.message_entry = tk.Entry(root, width=50)
+        self.message_entry.pack()
+
+        self.rank_label = tk.Label(root, text="Choose the matrix rank (2, 3, or 4):")
+        self.rank_label.pack()
+
+        self.rank_entry = tk.Entry(root)
+        self.rank_entry.pack()
+
+        self.encrypt_button = tk.Button(root, text="Encrypt", command=self.encrypt_message)
+        self.encrypt_button.pack()
