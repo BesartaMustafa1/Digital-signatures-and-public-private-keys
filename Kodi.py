@@ -140,3 +140,8 @@ def decrypt_message(self):
             self.decrypted_message_text.insert(tk.END, decrypted_message)
         except Exception as e:
             messagebox.showerror("Error", str(e))
+            
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = MatrixCipherGUI(root)
+    root.mainloop()             
