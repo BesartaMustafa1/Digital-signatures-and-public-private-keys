@@ -35,3 +35,46 @@ Graphical User Interface (GUI):
 ### MatrixCipherGUI: A class to create the GUI for encryption and decryption.
 Predefined Matrices
 Matrices are predefined for different ranks (2, 3, and 4), which are used for encryption and decryption.
+
+Here is an overview of the Hill Cipher implemented in these codes:
+
+Hill Cipher uses a matrix (the key) to encrypt and decrypt messages.
+The message is divided into blocks of the same size as the matrix.
+Each block is multiplied by the key matrix to create the encrypted message.
+Decryption is performed using the modular inverse of the key matrix.
+These steps are clearly reflected in the provided codes, ensuring that messages are correctly encrypted and decrypted using the Hill method.
+
+Description of Key Functions:
+Encryption:
+python
+Copy code
+def encrypt(message, matrix):
+    if matrix.shape[0] != matrix.shape[1]:
+        raise ValueError("The encryption matrix must be square.")
+    block_size = len(matrix)
+    message_vector = message_to_vector(message, block_size)
+    encrypted_message = ""
+    for i in range(0, len(message_vector), block_size):
+        block_vector = message_vector[i:i + block_size]
+        encrypted_vector = np.dot(matrix, block_vector) % 64
+        encrypted_message += ''.join(num_to_char(int(i)) for i in encrypted_vector)
+
+    return encrypted_message
+Decryption:
+python
+Copy code
+def decrypt(encrypted_message, matrix):
+    if matrix.shape[0] != matrix.shape[1]:
+        raise ValueError("The decryption matrix must be square.")
+    block_size = len(matrix)
+    message_vector = message_to_vector(encrypted_message, block_size)
+    decrypted_message = ""
+    matrix_inv = mod_inv(matrix, 64)
+
+    for i in range(0, len(message_vector), block_size):
+        block_vector = message_vector[i:i + block_size]
+        decrypted_vector = np.dot(matrix_inv, block_vector) % 64
+        decrypted_message += ''.join(num_to_char(int(i)) for i in decrypted_vector)
+
+    return decrypted_message
+This code is an implementation of the Hill method for encryption and decryption, using matrix algebra to transform messages.
